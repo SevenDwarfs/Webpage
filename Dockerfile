@@ -1,6 +1,6 @@
 FROM node:6.10.3
 WORKDIR web-server
-COPY ./* .
+COPY . .
 RUN npm config set registry https://registry.npm.taobao.org \
     && npm config get registry
 RUN npm install \
