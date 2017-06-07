@@ -4,5 +4,5 @@ docker rm web-server
 docker rmi web-server
 docker build -t web-server .
 docker run -d --name web-server web-server
-docker cp web-server:/web-server/dist /root/webpage
-
+# save to /home/kinpzz/webpage
+docker cp web-server:/web-server/dist /home/kinpzz/webpage
