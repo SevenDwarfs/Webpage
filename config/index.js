@@ -29,7 +29,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api/**/*': {
-        target: 'http://aliyun.kinpzz.com:8082',
+        target: 'http://aliyun.kinpzz.com:8000',
         secure: false
       }
     },
