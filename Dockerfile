@@ -7,4 +7,4 @@ RUN npm install \
     && npm install anywhere \
     && npm run build
 WORKDIR dist
-CMD ["anywhere", "-h", "127.0.0.1", "-p", "8081"]
+CMD ["../node_modules/anywhere/bin/anywhere", "-h", "127.0.0.1", "-p", "8081"]
