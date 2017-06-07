@@ -87,7 +87,7 @@
 
 <script>
 
-import Vue from 'Vue'
+import vue from 'vue'
 
 import { Movie } from '@/models/index.js'
 
@@ -176,9 +176,9 @@ export default {
     },
     selectSeat (row, index) {
       if (row[index] === 0) {
-        Vue.set(row, index, 2)
+        vue.set(row, index, 2)
       } else if (row[index] === 2) {
-        Vue.set(row, index, 0)
+        vue.set(row, index, 0)
       }
     }
   }
