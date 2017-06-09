@@ -12,8 +12,8 @@
           img.movie-item__img(:src="film.url")
           .movie-item__bg
           .movie-item__info
-            .movie-item__info__name {{film.chineseName}}
-            span.movie-item__info__point {{film.id}}
+            .movie-item__info__name {{film.name}}
+            span.movie-item__info__point {{film.rating}}
           router-link.movie-item__operation(:to="{ name: 'FilmDetail', params: { id: film.id } }") 购票
     .movie-grid(v-loading="monthLoading")
       .movie-grid__header
@@ -23,8 +23,8 @@
           img.movie-item__img(:src="film.url")
           .movie-item__bg
           .movie-item__info
-            .movie-item__info__name {{film.chineseName}}
-            span.movie-item__info__point {{film.id}}
+            .movie-item__info__name {{film.name}}
+            span.movie-item__info__point {{film.rating}}
           router-link.movie-item__operation(:to="{ name: 'FilmDetail', params: { id: film.id } }") 购票
 
 
@@ -44,39 +44,6 @@ export default {
         src: 'http://p1.meituan.net/mmc/64fad7974cfd6c2136a31fa2bd8b4682129029.jpg'
       }, {
         src: 'http://p0.meituan.net/mmc/81fc61644a836fdd828aef5eda93a6e6116066.jpg'
-      }],
-      onsales: [{
-        src: 'http://p1.meituan.net/movie/af297f59e363ce96290dfea22f6fea0c153020.jpg@160w_220h_1e_1c',
-        name: '速度与激情8速度与激情8速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p1.meituan.net/movie/6fa181b782a72ff7cb1ef8aa874e1b7c998470.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p1.meituan.net/movie/28c727b5a79b8bdffe7d98e54a4d512f61385.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p0.meituan.net/movie/f0cfd38f05f52d6daaca212c2664db1a1770451.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p1.meituan.net/movie/af297f59e363ce96290dfea22f6fea0c153020.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p1.meituan.net/movie/6fa181b782a72ff7cb1ef8aa874e1b7c998470.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p1.meituan.net/movie/28c727b5a79b8bdffe7d98e54a4d512f61385.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p0.meituan.net/movie/f0cfd38f05f52d6daaca212c2664db1a1770451.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
       }],
       newsLoading: true,
       newFilms: [],
@@ -190,7 +157,7 @@ export default {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    max-width: 90px;
+    max-width: 60px;
   }
 
   .movie-item__info .movie-item__info__point {

@@ -27,8 +27,8 @@
       router-view
     el-dialog(title="用户登录", v-model="loginDialogVisible")
       el-form(:model="loginForm", :rules="loginRules", ref="loginForm", label-width="72px", label-position="left")
-        el-form-item(label="用户名", prop="username")
-          el-input(v-model="loginForm.username")
+        el-form-item(label="用户名", prop="adminname")
+          el-input(v-model="loginForm.adminname")
         el-form-item(label="密码", prop="password")
           el-input(type="password", v-model="loginForm.password")
       span(slot="footer")
@@ -39,6 +39,7 @@
 <script>
 
 import router from '@/router/index.js'
+import { User } from '@/models/index.js'
 
 export default {
   name: 'app',
@@ -48,11 +49,11 @@ export default {
       loginDialogVisible: false,
       hasLogin: false,
       loginForm: {
-        username: '',
+        adminname: '',
         password: ''
       },
       loginRules: {
-        username: [
+        adminname: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
           { min: 6, max: 100, message: '用户名长度最低为6位', trigger: 'blur' }
         ],
@@ -82,7 +83,14 @@ export default {
     login () {
       this.$refs['loginForm'].validate((valid) => {
         if (valid) {
-          console.log(this.loginForm)
+          User.login(this.loginForm).then(res => {
+            if (res.stateCode !== 200) {
+              this.$message.error(res.info)
+            } else {
+              this.$message.success('登陆成功')
+              this.loginDialogVisible = false
+            }
+          })
         } else {
           this.$message.error('表单错误')
         }

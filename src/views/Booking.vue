@@ -8,7 +8,7 @@
         .film__content__subtitle {{ film.englishName }}
         .film__content__info {{ film.type }}
         .film__content__info {{ film.length }}
-        .film__content__info {{ film.releaseDate }} 上映
+        .film__content__info {{ film.releaseDate }} {{ film.showPlace }}
     el-steps.booking__steps(space="40%", :active="currentStep", finish-status="success", :center="true", :align-center="true")
       el-step(title="步骤 1", description="选择时间 / 地点 / 影院")
       el-step(title="步骤 2", description="选择座位")
@@ -31,15 +31,15 @@
             span 地点 ：
           .slecter__items
             .slecter__items__item(v-for="(area, index) in areas", :class="index === areaSelect ? 'slecter__items__item--selected' : ''", @click="changeArea(index)") {{ area }}
-        .slecter
-          .slecter__info
-            img.slecter__info__icon(src="../assets/images/theater.png")
-            span 影院 ：
-          .slecter__items
-            .slecter__items__item(v-for="(cinema, index) in cinemas", :class="index === cinemaSelect ? 'slecter__items__item--selected' : ''", @click="changeCinema(index)") {{ cinema }}
+        //- .slecter
+        //-   .slecter__info
+        //-     img.slecter__info__icon(src="../assets/images/theater.png")
+        //-     span 影院 ：
+        //-   .slecter__items
+        //-     .slecter__items__item(v-for="(cinema, index) in cinemas", :class="index === cinemaSelect ? 'slecter__items__item--selected' : ''", @click="changeCinema(index)") {{ cinema.name }}
         .cinemas
           .cinema(v-for="(cinema, index) in cinemas")
-            .cinema__info {{ cinema }}
+            .cinema__info {{ cinema.name }}
             .cinema__op(@click="selectCinema(index)") 选座购票
 
     .seats(v-show="currentStep === 1")
@@ -71,7 +71,7 @@
       .info
         .info__title 影院信息:
         .info__content
-          .info__content__text {{ form.cinema }}
+          .info__content__text {{ form.cinema.name }}
       .info
         .info__title 时间信息:
         .info__content
@@ -83,18 +83,26 @@
       .order__op
         .order__op__item(@click="back") 返回
         .order__op__item 确认订单
+
+    el-dialog(title="选择排场时间", v-model="timeSelectVisible", size="tiny")
+      el-time-select(size="large", v-model="timeStamp", :picker-options="{ start: '08:30', step: '00:30', end: '22:30'}",placeholder="选择时间")
+      span(slot="footer")
+        el-button(@click="timeSelectVisible = false") 取 消
+        el-button(type="primary", @click="selectTime") 确 定
 </template>
 
 <script>
 
 import vue from 'vue'
 
-import { Movie } from '@/models/index.js'
+import { Movie, Cinema } from '@/models/index.js'
 
 export default {
   name: 'hello',
   data () {
     return {
+      timeSelectVisible: false,
+      timeStamp: '',
       film: {},
       tabName: 'intro',
       seats: [
@@ -111,14 +119,14 @@ export default {
       timeSelect: 0,
       times: ['今天', '明天', '后天'],
       areaSelect: 0,
-      areas: ['全部', '番禺区', '白云区', '海珠区', '天河区', '荔湾区', '越秀区', '黄埔区', '花都区', '南沙区', '从化市', '增城市'],
+      areas: ['番禺区', '白云区', '海珠区', '天河区', '荔湾区', '越秀区', '黄埔区', '花都区', '南沙区', '从化市', '增城市'],
       cinemaSelect: 0,
-      cinemas: ['全部', 'CGV影城', 'SFC上影影城', 'UA影院', 'UME国际影城', '百老汇影城'],
+      cinemas: [],
       form: {
         cinema: '',
-        time: '今天上午11:30',
+        time: '',
         seats: [],
-        money: '100元'
+        money: ''
       }
     }
   },
@@ -127,6 +135,7 @@ export default {
     Movie.fetchDtl(id).then(data => {
       this.film = data
     })
+    this.changeArea(0)
   },
   methods: {
     changeTime (index) {
@@ -134,6 +143,9 @@ export default {
     },
     changeArea (index) {
       this.areaSelect = index
+      Cinema.fetchCinemaByArea(this.areas[index]).then(res => {
+        this.cinemas = res
+      })
     },
     changeCinema (index) {
       this.cinemaSelect = index
@@ -159,13 +171,12 @@ export default {
         })
       } else {
         this.form.seats = seats
+        this.form.money = seats.length * 30 + '元'
         this.currentStep = this.currentStep + 1
       }
     },
     selectCinema (index) {
       this.form.cinema = this.cinemas[index]
-      console.log(this.form)
-      this.currentStep = 1
       for (let i = 0; i < this.seats.length; i++) {
         for (let j = 0; j < this.seats[i].length; j++) {
           if (this.seats[i][j] === 2) {
@@ -173,6 +184,12 @@ export default {
           }
         }
       }
+      this.timeSelectVisible = true
+    },
+    selectTime () {
+      this.form.time = this.times[this.timeSelect] + this.timeStamp
+      this.currentStep = 1
+      this.timeSelectVisible = false
     },
     selectSeat (row, index) {
       if (row[index] === 0) {

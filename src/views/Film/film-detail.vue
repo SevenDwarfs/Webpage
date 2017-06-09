@@ -8,35 +8,26 @@
         .film__header__content__subtitle {{ film.englishName }}
         .film__header__content__info {{ film.type }}
         .film__header__content__info {{ film.length }}
-        .film__header__content__info {{ film.releaseDate }} 上映
+        .film__header__content__info {{ film.releaseDate }} {{ film.showPlace }}
         router-link.film__header__content__operation(:to="{ name: 'Booking', params: { id: film.id } }") 立刻购票
 
     el-tabs.film__body(v-model="tabName")
       el-tab-pane(label="介绍", name="intro")
         .film__body__title 剧情简介
         .film__body__content {{ film.introduction }}
-        .film__body__title 演职人员
-        .film__body__content
-          //- .film-man(v-for="item in film.mans")
-          //-   img.film-man__avatar(:src="item.avatar")
-          //-   .film-man__name {{ item.name }}
-          //-   .film-man__role(v-if="item.role") {{ item.role }}
-          //-   .film-man__role(v-else) 导演
       el-tab-pane(label="演职人员", name="people")
         .film__body__title 导演
-        //- .film__body__content
-        //-   .film-man(v-for="item in film.mans", v-if="!item.role")
-        //-     img.film-man__avatar(:src="item.avatar")
-        //-     .film-man__name {{ item.name }}
+        .film__body__content
+          .film-man(v-for="item in film.directors")
+            img.film-man__avatar(:src="item.url")
+            .film-man__name {{ item.name }}
         .film__body__title 演员
-        //- .film__body__content
-        //-   .film-man(v-for="item in film.mans", v-if="item.role")
-        //-     img.film-man__avatar(:src="item.avatar")
-        //-     .film-man__name {{ item.name }}
-        //-     .film-man__role {{ item.role }}
+        .film__body__content
+          .film-man(v-for="item in film.actors")
+            img.film-man__avatar(:src="item.url")
+            .film-man__name {{ item.name }}
       el-tab-pane(label="图集", name="pic")
-        img.film-img(src="http://p1.meituan.net/movie/227d113ae207fc3043075296dc7d3b4f41456.jpg@106w_106h_1e_1c")
-        img.film-img(src="http://p1.meituan.net/movie/7b6e5a4a8a8e5ecbbe5f30d95fc84513120644.jpg@106w_106h_1e_1c")
+        img.film-img(v-for="pic in film.pictures", :src="pic.url")
 
 </template>
 
