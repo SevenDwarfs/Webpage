@@ -33,6 +33,7 @@
 <script>
 
 import router from '@/router/index.js'
+import { User } from '@/models/index.js'
 const MAX_STEP = 3
 
 export default {
@@ -114,11 +115,18 @@ export default {
           email: this.mailForm.email,
           phone: this.phoneForm.phone
         }
-        console.log(submitForm)
-        setTimeout(() => {
+        User.signup(submitForm).then(res => {
           this.creating = false
-          router.push({ name: 'Home' })
-        }, 5000)
+          if (res.stateCode === '200') {
+            this.$message.success('创建成功，请登录')
+            router.push({ name: 'Home' })
+          } else {
+            this.$message.error(res.info)
+          }
+        }).catch(() => {
+          this.creating = false
+          this.$message.error('创建失败')
+        })
       }
     },
     back () {

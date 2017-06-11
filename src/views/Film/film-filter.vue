@@ -21,6 +21,9 @@
 </template>
 
 <script>
+
+import { Movie } from '@/models/index.js'
+
 export default {
   name: 'hello',
   data () {
@@ -65,6 +68,9 @@ export default {
       times: ['全部', '2017以后', '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2000-2010', '90年代', '80年代', '70年代', '更早'],
       timeSelect: 4
     }
+  },
+  created () {
+    Movie.countMovie('爱情', '大陆', '2017').then(console.log)
   },
   methods: {
     change (type, index) {

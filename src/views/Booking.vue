@@ -56,7 +56,7 @@
         .seat-tip__text 已售座位
         .seat.seat--selected
         .seat-tip__text 已选座位
-      .seat-container
+      .seat-container(v-loading="seatsLoading")
         .seat-row(v-for="row in seats")
           .seat(v-for="(seat, index) in row", :class="['seat', 'seat--sale', 'seat--selected'][seat]", @click="selectSeat(row, index)")
       img.seat-screen(src="../assets/images/screen.png")
@@ -82,7 +82,7 @@
           .info__content__text {{ form.money }}
       .order__op
         .order__op__item(@click="back") 返回
-        .order__op__item 确认订单
+        .order__op__item(@click="") 确认订单
 
     el-dialog(title="选择排场时间", v-model="timeSelectVisible", size="tiny")
       el-time-select(size="large", v-model="timeStamp", :picker-options="{ start: '08:30', step: '00:30', end: '22:30'}",placeholder="选择时间")
@@ -105,16 +105,7 @@ export default {
       timeStamp: '',
       film: {},
       tabName: 'intro',
-      seats: [
-        [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0]
-      ],
+      seats: [],
       currentStep: 0,
       timeSelect: 0,
       times: ['今天', '明天', '后天'],
@@ -122,6 +113,7 @@ export default {
       areas: ['番禺区', '白云区', '海珠区', '天河区', '荔湾区', '越秀区', '黄埔区', '花都区', '南沙区', '从化市', '增城市'],
       cinemaSelect: 0,
       cinemas: [],
+      seatsLoading: false,
       form: {
         cinema: '',
         time: '',
@@ -190,6 +182,26 @@ export default {
       this.form.time = this.times[this.timeSelect] + this.timeStamp
       this.currentStep = 1
       this.timeSelectVisible = false
+
+      let date = this.$moment().add(this.timeSelect, 'days').format('YYYYMMDD')
+      let time = this.timeStamp
+      this.seatsLoading = true
+      Cinema.fetchSeat(this.$route.params.id, this.form.cinema.id, date, time).then(res => {
+        let cinema = res[0]
+        let seats = cinema.seats
+        this.seats = []
+        for (let row = 0; row < 8; row++) {
+          this.seats.push([])
+          for (let col = 0; col < 11; col++) {
+            if (!seats[row * 11 + col] || seats[row * 11 + col] === '0') {
+              this.seats[row].push(0)
+            } else if (seats[row * 11 + col] === '1' || seats[row * 11 + col] === '2') {
+              this.seats[row].push(1)
+            }
+          }
+        }
+        this.seatsLoading = false
+      })
     },
     selectSeat (row, index) {
       if (row[index] === 0) {
