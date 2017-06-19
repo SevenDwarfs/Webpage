@@ -27,8 +27,8 @@
       router-view
     el-dialog(title="用户登录", v-model="loginDialogVisible")
       el-form(:model="loginForm", :rules="loginRules", ref="loginForm", label-width="72px", label-position="left")
-        el-form-item(label="用户名", prop="adminname")
-          el-input(v-model="loginForm.adminname")
+        el-form-item(label="用户名", prop="username")
+          el-input(v-model="loginForm.username")
         el-form-item(label="密码", prop="password")
           el-input(type="password", v-model="loginForm.password")
       span(slot="footer")
@@ -49,11 +49,11 @@ export default {
       loginDialogVisible: false,
       hasLogin: false,
       loginForm: {
-        adminname: '',
+        username: '',
         password: ''
       },
       loginRules: {
-        adminname: [
+        username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
           { min: 6, max: 100, message: '用户名长度最低为6位', trigger: 'blur' }
         ],
@@ -201,7 +201,7 @@ export default {
 }
 
 /* 初始化样式 */
-body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, input, textarea, th, td { margin:0; padding:0; } body, button, input, select, textarea { font:12px/1.5tahoma, arial, \5b8b\4f53; } h1, h2, h3, h4, h5, h6{ font-size:100%; } address, cite, dfn, em, var { font-style:normal; } code, kbd, pre, samp { font-family:couriernew, courier, monospace; } small{ font-size:12px; } ul, ol { list-style:none; } a { text-decoration:none; } a:hover { text-decoration:underline; } sup { vertical-align:text-top; } sub{ vertical-align:text-bottom; } legend { color:#000; } fieldset, img { border:0; } button, input, select, textarea { font-size:100%; } table { border-collapse:collapse; border-spacing:0; } 
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, input, textarea, th, td { margin:0; padding:0; } body, button, input, select, textarea { font:12px/1.5tahoma, arial, \5b8b\4f53; } h1, h2, h3, h4, h5, h6{ font-size:100%; } address, cite, dfn, em, var { font-style:normal; } code, kbd, pre, samp { font-family:couriernew, courier, monospace; } small{ font-size:12px; } ul, ol { list-style:none; } a { text-decoration:none; } a:hover { text-decoration:underline; } sup { vertical-align:text-top; } sub{ vertical-align:text-bottom; } legend { color:#000; } fieldset, img { border:0; } button, input, select, textarea { font-size:100%; } table { border-collapse:collapse; border-spacing:0; }
 a:link, a:active, a:hover, a:visited {
   text-decoration: none;
 }

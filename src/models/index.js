@@ -19,7 +19,7 @@ function postPromise (url, form) {
 
 const User = {
   login (form) {
-    return postPromise(`/api/admin/login`, form)
+    return postPromise(`/api/login`, form)
   },
   signup (form) {
     return postPromise(`/api/signup`, form)
