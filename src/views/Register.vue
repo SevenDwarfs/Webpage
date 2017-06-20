@@ -126,6 +126,7 @@ export default {
         }).catch(() => {
           this.creating = false
           this.$message.error('创建失败')
+          this.back()
         })
       }
     },

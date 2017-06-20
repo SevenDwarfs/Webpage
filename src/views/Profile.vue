@@ -5,29 +5,32 @@
       .user__info-container
         el-form-item.user__info(prop="username")
           .user__info__title 用户名：
-          el-input.user__info__text(v-model="user.username")
+          el-input.user__info__text(v-model="user.username", :disabled="true")
         el-form-item.user__info(prop="email")
           .user__info__title 邮箱：
           el-input.user__info__text(v-model="user.email")
         el-form-item.user__info(prop="phone")
           .user__info__title 电话：
           el-input.user__info__text(v-model="user.phone")
-        .operation.operation--save 保存
-      .operation.operation--avatar 更改头像
+        .operation.operation--save(@click="update") 保存
+      //- .operation.operation--avatar 更改头像
 
 
 </template>
 
 <script>
+
+import { User } from '@/models/index.js'
+
 export default {
   name: 'hello',
   data () {
     return {
       user: {
-        username: 'Quinze Lee',
-        email: 'gavingog@qq.com',
-        phone: '15521188004',
-        avatar: 'http://wx.qlogo.cn/mmopen/vi_32/klOZiauDdZsAHgcc31xE8La6M0XmrosR7jBwe8WveX0jibiaGSVhz6t0FgVxZ117cfUTOUiaUicicz78SGeVnxicsh1hw/0'
+        username: '',
+        email: '',
+        phone: '',
+        avatar: ''
       },
       rules: {
         username: [
@@ -45,6 +48,13 @@ export default {
       }
     }
   },
+  created () {
+    User.fetchInfo().then(res => {
+      this.user = res
+      this.user.username = res.userName
+      this.user.avatar = 'http://p0.meituan.net/movie/7dd82a16316ab32c8359debdb04396ef2897.png'
+    })
+  },
   methods: {
     emailValid (rule, value, callback) {
       const emailPattern = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/
@@ -61,6 +71,23 @@ export default {
       } else {
         callback()
       }
+    },
+    update () {
+      this.$refs['user'].validate((valid) => {
+        if (valid) {
+          User.updateInfo(this.user).then(res => {
+            if (res.stateCode === '200') {
+              this.$message.success('修改成功')
+            } else {
+              this.$message.error(res.info)
+            }
+          }).catch(() => {
+            this.$message.error('修改失败')
+          })
+        } else {
+          this.$message.error('表单错误')
+        }
+      })
     }
   }
 }
@@ -70,7 +97,7 @@ export default {
 <style scoped>
 
   .user {
-    padding-top: 160px;
+    padding-top: 100px;
     margin: 0px 130px;
     position: relative;
     overflow: visible;
@@ -80,7 +107,7 @@ export default {
     position: absolute;
     left: 50px;
     border-radius: 50%;
-    top: 90px;
+    top: 30px;
     height: 140px;
     border: 1px solid #efefef;
     width: 140px;

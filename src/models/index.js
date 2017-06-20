@@ -17,12 +17,29 @@ function postPromise (url, form) {
   })
 }
 
+function putPromise (url, form) {
+  return Vue.http.put(url, form, { emulateJSON: true }).then(res => {
+    return Promise.resolve(res.body)
+  }, () => {
+    return Promise.reject(new Error('未知错误'))
+  })
+}
+
 const User = {
   login (form) {
     return postPromise(`/api/login`, form)
   },
+  logout () {
+    return putPromise(`/api/logout`, {})
+  },
   signup (form) {
     return postPromise(`/api/signup`, form)
+  },
+  fetchInfo () {
+    return getPromise(`/api/user`)
+  },
+  updateInfo (form) {
+    return putPromise(`/api/user`, form)
   }
 }
 

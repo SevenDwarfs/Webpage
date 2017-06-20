@@ -69,6 +69,9 @@ export default {
     for (let i = 0; i < routes.length; i++) {
       if (routes[i].name === this.$route.name) this.active = routes[i].active + ''
     }
+    User.fetchInfo().then(res => {
+      if (res.userName) this.hasLogin = true
+    })
   },
   methods: {
     handleUserCommand (command) {
@@ -77,22 +80,44 @@ export default {
       } else if (command === 'register') {
         router.push({ name: 'Register' })
       } else if (command === 'logout') {
-
+        this.logout()
+      } else if (command === 'userinfo') {
+        router.push({ name: 'Profile' })
       }
     },
     login () {
       this.$refs['loginForm'].validate((valid) => {
         if (valid) {
           User.login(this.loginForm).then(res => {
-            if (res.stateCode !== 200) {
-              this.$message.error(res.info)
+            if (res.stateCode !== '200') {
+              this.$message({
+                message: res.info,
+                type: 'error'
+              })
             } else {
-              this.$message.success('登陆成功')
+              this.$message({
+                message: '登陆成功',
+                type: 'success'
+              })
+              this.hasLogin = true
               this.loginDialogVisible = false
             }
           })
         } else {
           this.$message.error('表单错误')
+        }
+      })
+    },
+    logout () {
+      User.logout().then(res => {
+        if (res.stateCode === '200') {
+          this.$message({
+            message: '退出成功',
+            type: 'success'
+          })
+          this.hasLogin = false
+        } else {
+          this.$message.error('登出失败, ' + res.info)
         }
       })
     }
