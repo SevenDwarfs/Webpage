@@ -74,8 +74,8 @@ const Cinema = {
   fetchCinemaByArea (area, num = 50) {
     return getPromise(`/api/cinema?number=${num}&address=${area}`)
   },
-  fetchSeat (mid, cid, date, time) {
-    return getPromise(`/api/screen?cinemaid=${mid}&movieid=${cid}&date=${date}&time=${time}`)
+  fetchSeat (cid, mid, date, time) {
+    return getPromise(`/api/screen?cinemaid=${cid}&movieid=${mid}&date=${date}&time=${time}`)
   }
 }
 
