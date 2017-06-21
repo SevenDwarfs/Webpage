@@ -220,7 +220,7 @@ export default {
       let date = this.$moment().add(this.timeSelect, 'days').format('YYYYMMDD')
       let time = this.timeStamp
       this.seatsLoading = true
-      Cinema.fetchSeat(this.$route.params.id, this.form.cinema.id, date, time).then(res => {
+      Cinema.fetchSeat(this.$route.cinema.id, this.form.params.id, date, time).then(res => {
         let cinema = res[0]
         this.seatid = cinema.id
         let seats = cinema.seats + ''
@@ -423,7 +423,7 @@ export default {
   }
 
   .order__op {
-  
+
   }
 
   .order__op__item {
