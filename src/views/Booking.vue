@@ -57,8 +57,8 @@
         .seat.seat--selected
         .seat-tip__text 已选座位
       .seat-container(v-loading="seatsLoading")
-        .seat-row(v-for="row in seats")
-          .seat(v-for="(seat, index) in row", :class="['seat', 'seat--sale', 'seat--selected'][seat]", @click="selectSeat(row, index)")
+        .seat-row(v-for="(row, rowIndex) in seats")
+          .seat(v-for="(seat, index) in row", :class="['seat', 'seat--sale', 'seat--selected'][seat]", @click="selectSeat(row, index, rowIndex)")
       img.seat-screen(src="../assets/images/screen.png")
 
     .order(v-show="currentStep === 2")
@@ -95,7 +95,7 @@
 
 import vue from 'vue'
 
-import { Movie, Cinema } from '@/models/index.js'
+import { User, Movie, Cinema } from '@/models/index.js'
 
 export default {
   name: 'hello',
@@ -203,9 +203,23 @@ export default {
         this.seatsLoading = false
       })
     },
-    selectSeat (row, index) {
+    selectSeat (row, index, rowIndex) {
       if (row[index] === 0) {
-        vue.set(row, index, 2)
+        let seat = ''
+        for (var i = 0; i < 8 * 11; i++) {
+          if (i === rowIndex * 8 + index) seat += '1'
+          else seat += '0'
+        }
+        User.lockSeat(this.$route.params.id, { seat }).then(res => {
+          if (res.stateCode === '200') {
+            vue.set(row, index, 2)
+            this.$message('锁定座位成功')
+          } else {
+            throw new Error()
+          }
+        }).catch(() => {
+          this.$message.error('锁定座位失败')
+        })
       } else if (row[index] === 2) {
         vue.set(row, index, 0)
       }

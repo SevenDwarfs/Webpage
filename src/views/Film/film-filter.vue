@@ -40,7 +40,7 @@ export default {
       areas: ['all', '大陆', '美国', '韩国', '日本', '中国香港', '中国台湾', '泰国', '印度', '法国', '英国', '俄罗斯', '意大利', '西班牙', '德国', '波兰', '澳大利亚', '伊朗', '其他'],
       areaSelect: 0,
       times: ['all', '2017', '2016', '2015', '2014', '2013', '2012', '2011'],
-      timeSelect: 1
+      timeSelect: 0
     }
   },
   created () {
@@ -196,6 +196,11 @@ export default {
     100% {
       top: 0px;
     }
+  }
+
+  .pages {
+    margin-bottom: 40px;
+    margin-top: 20px;
   }
 
 </style>

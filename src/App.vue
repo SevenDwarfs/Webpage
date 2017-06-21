@@ -13,7 +13,7 @@
             el-dropdown-item(command="register", v-if="!hasLogin") 注册
             el-dropdown-item(command="userinfo", v-if="hasLogin") 个人信息
             el-dropdown-item(command="logout", v-if="hasLogin") 退出
-      el-input#nav__search(placeholder="找影视剧、影人、影院", icon="search", size="large")
+      el-input#nav__search(placeholder="找影视剧、影人、影院", v-model="searchText", icon="search", size="large", :on-icon-click="search")
       el-menu#nav__menu(:default-active="active", class="el-menu-demo", mode="horizontal")
         router-link(:to="{ name: 'Home' }")
           el-menu-item(index="0") 首页
@@ -46,6 +46,7 @@ export default {
   data () {
     return {
       active: '0',
+      searchText: '',
       loginDialogVisible: false,
       hasLogin: false,
       loginForm: {
@@ -71,9 +72,18 @@ export default {
     }
     User.fetchInfo().then(res => {
       if (res.userName) this.hasLogin = true
+    }).catch(() => {
+      if (this.$route.name === 'Booking') this.navHome()
     })
   },
   methods: {
+    search () {
+      router.push({ name: 'FilmSearch', query: { keyword: this.searchText } })
+    },
+    navHome () {
+      router.push({ name: 'Home' })
+      this.loginDialogVisible = true
+    },
     handleUserCommand (command) {
       if (command === 'login') {
         this.loginDialogVisible = true
@@ -127,6 +137,10 @@ export default {
       let routes = router.options.routes
       for (let i = 0; i < routes.length; i++) {
         if (routes[i].name === to.name) this.active = routes[i].active + ''
+      }
+      if (to.name === 'Booking' && !this.hasLogin) {
+        router.push({ name: from.name })
+        this.loginDialogVisible = true
       }
     }
   }

@@ -40,6 +40,12 @@ const User = {
   },
   updateInfo (form) {
     return putPromise(`/api/user`, form)
+  },
+  lockSeat (id, form) {
+    return putPromise(`/api/user/screen/${id}`, form)
+  },
+  buySeat (id, form) {
+    return putPromise(`/api/user/screen/${id}`, form)
   }
 }
 
@@ -58,6 +64,9 @@ const Movie = {
   },
   countMovie (type, area, year) {
     return getPromise(`/api/movie/query/count?type=${type}&area=${area}&year=${year}`)
+  },
+  search (keyword) {
+    return getPromise(`/api/movie/name/${keyword}`)
   }
 }
 

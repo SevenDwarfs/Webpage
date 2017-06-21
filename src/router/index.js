@@ -6,6 +6,7 @@ import Booking from '@/views/Booking'
 import Profile from '@/views/Profile'
 import FilmDetail from '@/views/Film/film-detail'
 import FilmFilter from '@/views/Film/film-filter'
+import FilmSearch from '@/views/Film/film-search'
 
 Vue.use(Router)
 
@@ -44,6 +45,12 @@ let routes = [
     path: '/film/:id',
     name: 'FilmDetail',
     component: FilmDetail,
+    active: -1
+  },
+  {
+    path: '/search',
+    name: 'FilmSearch',
+    component: FilmSearch,
     active: -1
   }
 ]
