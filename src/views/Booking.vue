@@ -188,7 +188,7 @@ export default {
       this.seatsLoading = true
       Cinema.fetchSeat(this.$route.params.id, this.form.cinema.id, date, time).then(res => {
         let cinema = res[0]
-        let seats = cinema.seats
+        let seats = cinema.seats + ''
         this.seats = []
         for (let row = 0; row < 8; row++) {
           this.seats.push([])

@@ -9,6 +9,7 @@
         .film__header__content__info {{ film.type }}
         .film__header__content__info {{ film.length }}
         .film__header__content__info {{ film.releaseDate }} {{ film.showPlace }}
+        .film__header__content__rating 评分: {{ film.rating }}
         router-link.film__header__content__operation(:to="{ name: 'Booking', params: { id: film.id } }") 立刻购票
 
     el-tabs.film__body(v-model="tabName")
@@ -104,6 +105,16 @@ export default {
     line-height: 22px;
   }
 
+  .film__header__content__rating {
+    position: relative;
+    color: #ffb400;
+    font-weight: bold;
+    font-size: 22px;
+    font-style: italic;
+    margin-top: 20px;
+    margin-bottom: 30px;
+  }
+
   .film__header__content__operation {
     width: 250px;
     height: 40px;
@@ -112,7 +123,6 @@ export default {
     text-align: center;
     border-radius: 2px;
     background: #20a0ff;
-    margin-top: 50px;
     cursor: pointer;
     font-weight: 500;
     display: block;

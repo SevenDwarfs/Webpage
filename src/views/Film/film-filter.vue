@@ -4,20 +4,22 @@
       .selector
         .selector__info 类型 :
         .selector__items
-          .selector__item(v-for="(type, index) in types", :class="index === typeSelect ? 'selector__item--selected' : ''", @click="change('type', index)") {{ type }}
-      .selector
-        .selector__info 区域 :
-        .selector__items
-          .selector__item(v-for="(area, index) in areas", :class="index === areaSelect ? 'selector__item--selected' : ''", @click="change('area', index)") {{ area }}
+          .selector__item(v-for="(type, index) in types", :class="index === typeSelect ? 'selector__item--selected' : ''", @click="update('type', index)") {{ type }}
+      //- .selector
+      //-   .selector__info 区域 :
+      //-   .selector__items
+      //-     .selector__item(v-for="(area, index) in areas", :class="index === areaSelect ? 'selector__item--selected' : ''", @click="update('area', index)") {{ area }}
       .selector
         .selector__info 年代 :
         .selector__items
-          .selector__item(v-for="(time, index) in times", :class="index === timeSelect ? 'selector__item--selected' : ''", @click="change('time', index)") {{ time }}
-    .results
-      router-link.film(v-for="film in onsales", :to="{ name: 'FilmDetail', params: { id: 123 } }")
-        img.film__img(:src="film.src")
+          .selector__item(v-for="(time, index) in times", :class="index === timeSelect ? 'selector__item--selected' : ''", @click="update('time', index)") {{ time }}
+    .results(v-loading="loading")
+      router-link.film(v-for="film in onsales", :to="{ name: 'FilmDetail', params: { id: film.id } }")
+        img.film__img(:src="film.url")
         .film__info
           .film__info__name {{film.name}}
+    .pages
+      el-pagination(layout="prev, pager, next", :page-size="step", :total="total", @current-change="handleCurrentChange")
 </template>
 
 <script>
@@ -28,53 +30,47 @@ export default {
   name: 'hello',
   data () {
     return {
-      onsales: [{
-        src: 'http://p1.meituan.net/movie/af297f59e363ce96290dfea22f6fea0c153020.jpg@160w_220h_1e_1c',
-        name: '速度与激情8速度与激情8速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p1.meituan.net/movie/6fa181b782a72ff7cb1ef8aa874e1b7c998470.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p1.meituan.net/movie/28c727b5a79b8bdffe7d98e54a4d512f61385.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p0.meituan.net/movie/f0cfd38f05f52d6daaca212c2664db1a1770451.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p1.meituan.net/movie/af297f59e363ce96290dfea22f6fea0c153020.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p1.meituan.net/movie/6fa181b782a72ff7cb1ef8aa874e1b7c998470.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p1.meituan.net/movie/28c727b5a79b8bdffe7d98e54a4d512f61385.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
-      }, {
-        src: 'http://p0.meituan.net/movie/f0cfd38f05f52d6daaca212c2664db1a1770451.jpg@160w_220h_1e_1c',
-        name: '速度与激情8',
-        score: '9.4'
-      }],
-      types: ['全部', '爱情', '喜剧', '动画', '剧情', '恐怖', '惊悚', '科幻', '动作', '悬疑', '犯罪', '冒险', '战争', '奇幻', '运动', '家庭', '古装', '武侠', '西部', '历史', '传记', '情色', '歌舞', '黑色电影', '短片', '纪录片', '其他'],
+      onsales: [],
+      page: 0,
+      step: 60,
+      total: 0,
+      loading: false,
+      types: ['all', '爱情', '喜剧', '动画', '剧情', '恐怖', '惊悚', '科幻', '动作', '悬疑', '犯罪', '冒险', '战争', '奇幻', '运动', '家庭', '古装', '武侠', '西部', '历史', '传记', '情色', '歌舞', '黑色电影', '短片', '纪录片', '其他'],
       typeSelect: 0,
-      areas: ['全部', '大陆', '美国', '韩国', '日本', '中国香港', '中国台湾', '泰国', '印度', '法国', '英国', '俄罗斯', '意大利', '西班牙', '德国', '波兰', '澳大利亚', '伊朗', '其他'],
+      areas: ['all', '大陆', '美国', '韩国', '日本', '中国香港', '中国台湾', '泰国', '印度', '法国', '英国', '俄罗斯', '意大利', '西班牙', '德国', '波兰', '澳大利亚', '伊朗', '其他'],
       areaSelect: 0,
-      times: ['全部', '2017以后', '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2000-2010', '90年代', '80年代', '70年代', '更早'],
-      timeSelect: 4
+      times: ['all', '2017', '2016', '2015', '2014', '2013', '2012', '2011'],
+      timeSelect: 1
     }
   },
   created () {
-    Movie.countMovie('爱情', '大陆', '2017').then(console.log)
+    this.updateMovie()
   },
   methods: {
-    change (type, index) {
-      this[type + 'Select'] = index
+    update (_type, index) {
+      this[_type + 'Select'] = index
+      this.updateMovie()
+    },
+    updateMovie () {
+      let type = this.types[this.typeSelect]
+      let area = 'all'
+      let time = this.times[this.timeSelect]
+      this.loading = true
+      Movie.queryMovie(type, area, time, this.page, this.step).then(res => {
+        this.onsales = res
+        this.loading = false
+      }).catch(err => {
+        this.loading = false
+        this.$message.error(err.message)
+      })
+      Movie.countMovie(type, area, time).then(total => {
+        this.total = total
+      })
+    },
+    handleCurrentChange (current) {
+      this.page = current - 1
+      this.updateMovie()
+      window.scroll(0, 0)
     }
   }
 }
