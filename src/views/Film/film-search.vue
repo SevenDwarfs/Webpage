@@ -5,6 +5,8 @@
         img.film__img(:src="film.url")
         .film__info
           .film__info__name {{film.name}}
+    .no(v-if="onsales.length === 0")
+      h3 无相关电影
 </template>
 
 <script>
