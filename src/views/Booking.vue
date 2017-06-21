@@ -61,7 +61,7 @@
           .seat(v-for="(seat, index) in row", :class="['seat', 'seat--sale', 'seat--selected'][seat]", @click="selectSeat(row, index, rowIndex)")
       img.seat-screen(src="../assets/images/screen.png")
 
-    .order(v-show="currentStep === 2")
+    .order(v-show="currentStep === 2", v-loading="buying")
       .info
         .info__title 座位信息:
         .info__content
@@ -82,7 +82,7 @@
           .info__content__text {{ form.money }}
       .order__op
         .order__op__item(@click="back") 返回
-        .order__op__item(@click="") 确认订单
+        .order__op__item(@click="comfirmOrder") 确认订单
 
     el-dialog(title="选择排场时间", v-model="timeSelectVisible", size="tiny")
       el-time-select(size="large", v-model="timeStamp", :picker-options="{ start: '08:30', step: '00:30', end: '22:30'}",placeholder="选择时间")
@@ -94,7 +94,7 @@
 <script>
 
 import vue from 'vue'
-
+import router from '@/router/index.js'
 import { User, Movie, Cinema } from '@/models/index.js'
 
 export default {
@@ -103,6 +103,7 @@ export default {
     return {
       timeSelectVisible: false,
       timeStamp: '',
+      seatid: '',
       film: {},
       tabName: 'intro',
       seats: [],
@@ -114,6 +115,7 @@ export default {
       cinemaSelect: 0,
       cinemas: [],
       seatsLoading: false,
+      buying: false,
       form: {
         cinema: '',
         time: '',
@@ -162,10 +164,42 @@ export default {
           confirmButtonText: '确定'
         })
       } else {
-        this.form.seats = seats
-        this.form.money = seats.length * 30 + '元'
-        this.currentStep = this.currentStep + 1
+        let seat = ''
+        for (let i = 0; i < this.seats.length; i++) {
+          seat += this.seats[i].join('').replace(/1/g, '0').replace(/2/g, '1')
+        }
+        User.lockSeat(this.seatid, { seat }).then(res => {
+          if (res.stateCode === '200') {
+            this.$message('锁定座位成功')
+            this.form.seats = seats
+            this.form.money = seats.length * 30 + '元'
+            this.currentStep = this.currentStep + 1
+          } else {
+            throw new Error()
+          }
+        }).catch(() => {
+          this.$message.error('锁定座位失败')
+        })
       }
+    },
+    comfirmOrder () {
+      let seat = ''
+      for (let i = 0; i < this.seats.length; i++) {
+        seat += this.seats[i].join('').replace(/1/g, '0')
+      }
+      this.buying = true
+      User.buySeat(this.seatid, { seat }).then(res => {
+        if (res.stateCode === '200') {
+          this.$message('购买成功')
+          router.push({ name: 'Home' })
+        } else {
+          throw new Error()
+        }
+        this.buying = false
+      }).catch(() => {
+        this.$message.error('购买失败')
+        this.buying = false
+      })
     },
     selectCinema (index) {
       this.form.cinema = this.cinemas[index]
@@ -188,6 +222,7 @@ export default {
       this.seatsLoading = true
       Cinema.fetchSeat(this.$route.params.id, this.form.cinema.id, date, time).then(res => {
         let cinema = res[0]
+        this.seatid = cinema.id
         let seats = cinema.seats + ''
         this.seats = []
         for (let row = 0; row < 8; row++) {
@@ -205,21 +240,7 @@ export default {
     },
     selectSeat (row, index, rowIndex) {
       if (row[index] === 0) {
-        let seat = ''
-        for (var i = 0; i < 8 * 11; i++) {
-          if (i === rowIndex * 8 + index) seat += '1'
-          else seat += '0'
-        }
-        User.lockSeat(this.$route.params.id, { seat }).then(res => {
-          if (res.stateCode === '200') {
-            vue.set(row, index, 2)
-            this.$message('锁定座位成功')
-          } else {
-            throw new Error()
-          }
-        }).catch(() => {
-          this.$message.error('锁定座位失败')
-        })
+        vue.set(row, index, 2)
       } else if (row[index] === 2) {
         vue.set(row, index, 0)
       }

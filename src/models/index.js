@@ -66,7 +66,7 @@ const Movie = {
     return getPromise(`/api/movie/query/count?type=${type}&area=${area}&year=${year}`)
   },
   search (keyword) {
-    return getPromise(`/api/movie/name/${keyword}`)
+    return getPromise(`/api/search?query=${keyword}`)
   }
 }
 

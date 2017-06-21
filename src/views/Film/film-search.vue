@@ -19,8 +19,9 @@ export default {
   },
   created () {
     Movie.search(this.$route.query.keyword).then(res => {
-      if (res.id !== -1) this.onsales = [res]
-      else this.$message.error('不存在该电影')
+      this.onsales = res
+      // if (res.id !== -1) this.onsales = [res]
+      // else this.$message.error('不存在该电影')
     })
   }
 }
