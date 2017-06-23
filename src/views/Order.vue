@@ -5,15 +5,20 @@
       .order__info-container(v-for="order in orderlist")
         el-form-item.order__info__id 订单号：NO.{{ order.id }}
         el-form-item.order__info
-          .order__info__text 电影：{{ order.movieName }}
-          .order__info__text 语言：{{ order.language }}
-          .order__info__text 时间：{{ order.showDate}} {{ order.showTime}}
+          .order__info__text 电影：
+          .order__info__data {{ order.movieName }}
+          .order__info__text 语言：
+          .order__info__data {{ order.language }}
+          .order__info__text 时间：
+          .order__info__data {{ order.showDate}} {{ order.showTime}}
           br
-          .order__info__text 场次：{{ order.room }}
-          .order__info__text 票数：{{ order.seat.length }} 张
-          .order__info__text__item 座位：
-          .order__info__text__item(v-for="seat in order.seat")
-            {{ seat.row }}行{{ seat.col }}列&emsp;
+          .order__info__text 场次：
+          .order__info__data {{ order.room }}
+          .order__info__text 票数：
+          .order__info__data {{ order.seat.length }} 张
+          .order__info__text 座位：
+          .order__info__data(v-for="seat in order.seat")
+            {{ seat.row }}行{{ seat.col }}列
 
 </template>
 
@@ -80,7 +85,7 @@ export default {
   .order__info-container {
     border: 1px solid #efefef;
     height: 150px;
-    width: 80%;
+    width: 85%;
     margin: 50px auto 50px auto;
     text-align: left;
     box-shadow: 0px 0px 4px #d1dbe5;
@@ -113,10 +118,12 @@ export default {
     display: inline-block;
     text-align: left;
     font-size: 15px;
-    margin-right: 20px;
+    font-weight: 500;
   }
-  .order__info__text__item {
+  .order__info__data {
     display: inline-block;
-    margin: 0;
+    text-align: left;
+    font-size: 15px;
+    margin-right: 20px;
   }
 </style>
