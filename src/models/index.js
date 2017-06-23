@@ -46,6 +46,9 @@ const User = {
   },
   buySeat (id, form) {
     return putPromise(`/api/user/screen/${id}`, form)
+  },
+  getOrders () {
+    return getPromise('/api/user/order')
   }
 }
 
@@ -79,4 +82,10 @@ const Cinema = {
   }
 }
 
-export { User, Movie, Cinema }
+const Screen = {
+  getScreenById (id) {
+    return getPromise(`/api/screen/${id}`)
+  }
+}
+
+export { User, Movie, Cinema, Screen }

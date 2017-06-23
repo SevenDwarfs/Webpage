@@ -11,6 +11,7 @@
           el-dropdown-menu(slot="dropdown")
             el-dropdown-item(command="login", v-if="!hasLogin") 登录
             el-dropdown-item(command="register", v-if="!hasLogin") 注册
+            el-dropdown-item(command="userorders", v-if="hasLogin") 查询订单
             el-dropdown-item(command="userinfo", v-if="hasLogin") 个人信息
             el-dropdown-item(command="logout", v-if="hasLogin") 退出
       el-input#nav__search(placeholder="找影视剧、影人、影院", v-model="searchText", icon="search", size="large", :on-icon-click="search")
@@ -93,6 +94,8 @@ export default {
         this.logout()
       } else if (command === 'userinfo') {
         router.push({ name: 'Profile' })
+      } else if (command === 'userorders') {
+        router.push({ name: 'Order' })
       }
     },
     login () {
